@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, Grid, Card, Paper } from '@mui/material';
 import Login from '../compontents/Login';
 import Chart from '../compontents/Chart';
@@ -6,10 +6,12 @@ import apiRequest from '../utils/apiRequest';
 import { IStock } from '../utils/types';
 import StockTable from '../compontents/StockTable';
 import EarningsCalendar from '../compontents/Calendar';
+import { ProfileContext } from '../contexts/profile';
 
 const Home: React.FC = () => {
-    const isLoggedIn = false;
-    const funds = 0;
+    const {
+        isLoggedIn,
+        } = useContext(ProfileContext);
     const [stocks, setStocks] = React.useState<IStock[]>([]);
 
     React.useEffect(() => {
@@ -24,6 +26,10 @@ const Home: React.FC = () => {
         })();
     }, []);
 
+    React.useEffect(() => {
+        console.log(isLoggedIn)
+    }, [isLoggedIn]);
+
 
     return (
         <div style={{margin: "auto", maxWidth: 1200  }}>
@@ -35,7 +41,9 @@ const Home: React.FC = () => {
                 </Grid>
                 <Grid item xs={4}>
                     <Paper sx={{padding: "1em", minHeight: 320}}>
-                        <Login />
+                        {(!isLoggedIn) 
+                        ? (<Login />)
+                        : (<div>heh</div>)}
                     </Paper>
                 </Grid>
                 <Grid item xs={8}>

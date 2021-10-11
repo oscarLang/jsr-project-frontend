@@ -24,11 +24,11 @@ const EarningsCalendar: React.FC = () => {
             <Typography variant="h6">Upcoming earnings</Typography>
             <List>
                 <ListItem>
-                    <ListItemText primary={"Ericsson"} secondary={"2021-10-10"} />
+                    <ListItemText primary={"Todo"} secondary={"2021-10-10"} />
                 </ListItem>
                 <Divider />
                 <ListItem>
-                    <ListItemText primary={"Ericsson"} secondary={"2021-10-10"} />
+                    <ListItemText primary={"Todo"} secondary={"2021-10-10"} />
                 </ListItem>
             </List>
         </>

@@ -4,37 +4,47 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { Link, Route, Switch } from "react-router-dom";
 
 import { AccountCircle } from '@mui/icons-material';
-import React from 'react';
+import React, { useContext, useReducer } from 'react';
 import apiRequest from '../utils/apiRequest';
+import profileReducer from '../reducers/profile';
+import { ProfileContext } from '../contexts/profile';
 
 const Login = (): JSX.Element => {
-    const isLoggedIn = false;
+    const {
+        isLoggingIn,
+        isLoggedIn,
+        profile,
+        loginUser
+        } = useContext(ProfileContext);
     const funds = 0;
+    React.useEffect(() => {
+        console.log(profile);
+    }, [isLoggedIn]);
+
     const [form, setForm] = React.useState({
         email: "",
         password: ""
     });
-
     const onChange = (name: string, value: string): void => {
         setForm({...form, [name]: value})
     };
 
-    const loginUser = async (event: React.FormEvent): Promise<void> => {
+    const loginUserButtonPress = async (event: React.FormEvent): Promise<void> => {
         event.preventDefault();
-        try {
-            const result = await apiRequest("/user/login/", "POST", form);
-            console.log(result);
-        } catch (error) {
-            console.log(error);
-        }
+        await loginUser(form.email, form.password);
     };
+
+    if (isLoggedIn) {
+        return <div>Logged in</div>;
+    }
+
     return (
         <div>
             <Avatar />
             <Typography component="h1" variant="h5">
                 Sign in to start trading
             </Typography>
-            <form onSubmit={loginUser}>
+            <form onSubmit={loginUserButtonPress}>
                 <TextField
                 variant="outlined"
                 margin="normal"
