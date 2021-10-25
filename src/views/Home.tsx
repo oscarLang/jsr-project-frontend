@@ -7,13 +7,15 @@ import { IStock } from '../utils/types';
 import StockTable from '../compontents/StockTable';
 import EarningsCalendar from '../compontents/Calendar';
 import { ProfileContext } from '../contexts/profile';
+import Profile from "../compontents/Profile";
 
 const Home: React.FC = () => {
     const {
         isLoggedIn,
+        profile,
+        funds
         } = useContext(ProfileContext);
     const [stocks, setStocks] = React.useState<IStock[]>([]);
-
     React.useEffect(() => {
         (async function() {
             try {
@@ -32,33 +34,19 @@ const Home: React.FC = () => {
 
 
     return (
-        <div style={{margin: "auto", maxWidth: 1200  }}>
-            <Grid container spacing={2}>
-                <Grid item xs={8}>
-                    <Paper sx={{padding: "1em"}}>
-                        <Chart object={stocks ? stocks[0] : {} as IStock}/>       
-                    </Paper>
-                </Grid>
-                <Grid item xs={4}>
-                    <Paper sx={{padding: "1em", minHeight: 320}}>
-                        {(!isLoggedIn) 
-                        ? (<Login />)
-                        : (<div>heh</div>)}
-                    </Paper>
-                </Grid>
-                <Grid item xs={8}>
-                    <Paper sx={{padding: "1em"}}>
-                        <Typography variant="h6">Popular stocks</Typography>
-                        <StockTable objects={stocks}/>
-                    </Paper>
-                </Grid>
-                <Grid item xs={4}>
-                    <Paper sx={{padding: "1em"}}>
-                        <EarningsCalendar />
-                    </Paper>
-                </Grid>
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Paper sx={{padding: "1em"}}>
+                    <Chart object={stocks ? stocks[0] : {} as IStock}/>
+                </Paper>
             </Grid>
-        </div>
+            <Grid item xs={12}>
+                <Paper sx={{padding: "1em"}}>
+                    <Typography variant="h6">Popular stocks</Typography>
+                    <StockTable objects={stocks}/>
+                </Paper>
+            </Grid>
+        </Grid>
     );  
 }
 

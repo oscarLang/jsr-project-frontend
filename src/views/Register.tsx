@@ -1,12 +1,8 @@
-import { AppBar, Toolbar, Typography, Button, IconButton, Grid, Avatar, TextField, Paper} from '@mui/material';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import { Link, Route, Switch } from "react-router-dom";
-
-import { AccountCircle } from '@mui/icons-material';
+import {Typography, Button, Avatar, TextField, Paper} from '@mui/material';
 import React from 'react';
 import apiRequest from '../utils/apiRequest';
 
-const Login = (): JSX.Element => {
+const Register = (): JSX.Element => {
     const [form, setForm] = React.useState({
         email: "",
         password: "",
@@ -79,4 +75,4 @@ const Login = (): JSX.Element => {
     );
 }
 
-export default Login;
+export default Register;

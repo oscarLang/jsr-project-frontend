@@ -16,7 +16,6 @@ const Chart: React.FC<IProps> = ({object}) => {
     let max = object.history.reduce((prev: IStockHistory, curr: IStockHistory) => prev.price > curr.price ? prev : curr);
     let minDomain = Number(min.price - 20) >= 0 ? Number(min.price - 20) : 0;
     let maxDomain = Number(max.price) + 20;
-    console.log(maxDomain, minDomain);
     return (
         <>
             <Typography variant="h4">{object.name}</Typography>

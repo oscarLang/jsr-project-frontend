@@ -9,19 +9,27 @@ import Register from './views/Register';
 import profileReducer from './reducers/profile';
 import { ProfileContext } from './contexts/profile';
 import apiRequest from './utils/apiRequest';
+import StockDetail from './views/StockDetail';
+import RouteWithSideInformation from './compontents/RouteWithSideInformation';
+import DepositView from './views/Deposit';
+import Portfolio from './views/Portfolio';
 
 const App = (): JSX.Element => {
     const {
         isLoggedIn,
         funds,
         isFetchingFunds,
-        getFunds
+        getFunds,
+        getProfile
     } = useContext(ProfileContext);
 
     React.useEffect(() => {
-        if (isLoggedIn && !isFetchingFunds) {
+        if (!isLoggedIn) {
             (async function() {
-                await getFunds();
+                const profileSuccess = await getProfile();
+                if (profileSuccess) {
+                    await getFunds();
+                }
             })();
         }
     }, []);
@@ -62,14 +70,16 @@ const App = (): JSX.Element => {
             </Toolbar>
             </AppBar>
         </Box>
-        
-        <Box sx={{margin: "1em"}}>
+        <Box sx={{margin: "auto", marginTop: "1em", maxWidth: 1200}}>
             <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/user/register" component={Register} />
-            {/* <Route exact path="/user/login" component={Login} />
-            <Route exact path="/market" component={Market} />
-            <Route exact path="/trade" component={Trade} /> */}
+                <RouteWithSideInformation exact path="/" component={Home} />
+                <RouteWithSideInformation exact path="/deposit" component={DepositView} />
+                <RouteWithSideInformation path="/user/portfolio" component={Portfolio} />
+                <Route path="/stocks/:stock" component={StockDetail} />
+                <Route exact path="/user/register" component={Register} />
+                {/* <Route exact path="/user/login" component={Login} />
+                <Route exact path="/market" component={Market} />
+                <Route exact path="/trade" component={Trade} /> */}
             </Switch>
         </Box>
         </>

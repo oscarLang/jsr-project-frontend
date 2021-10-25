@@ -9,6 +9,7 @@ export interface IStock {
     rate: number;
     stock: string;
     varience: number;
+    amount: number;
     history: IStockHistory[];
 }
   

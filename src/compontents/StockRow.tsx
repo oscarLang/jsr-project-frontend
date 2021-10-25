@@ -3,6 +3,9 @@ import { Button, CircularProgress, IconButton, makeStyles, Paper, Table, TableBo
 import { IStock, IStockHistory } from "../utils/types";
 import Chart from "./Chart";
 import { fade } from "material-ui/utils/colorManipulator";
+import { useHistory } from "react-router-dom";
+import { useModal } from "mui-modal-provider";
+import BuyDialog from "./BuyDialog";
 
 interface IProps {
   row: IStock;
@@ -12,13 +15,11 @@ interface IProps {
 const StockRow: React.FC<IProps> = ({row, alternativeLayout}) => {
     const [fade, setFade] = React.useState(0);
     const [color, setColor] = React.useState("Green");
+    const history = useHistory();
+    const { showModal } = useModal();
     React.useEffect(() => {
         setFade(1);
     }, [row]);
-
-    const handleOpenBuyDialog = () => {
-        console.log("buy");
-    };
 
     const handleOpenSellDialog = () => {
         console.log("sell");
@@ -26,7 +27,7 @@ const StockRow: React.FC<IProps> = ({row, alternativeLayout}) => {
 
     return (
         <TableRow>
-            <TableCell component="th" scope="row">
+            <TableCell component="th" scope="row" onClick={() => history.push(`/stocks/${row.stock}`)}>
             {row.stock}
             </TableCell>
             <TableCell align="right">{row.name}</TableCell>
@@ -38,12 +39,12 @@ const StockRow: React.FC<IProps> = ({row, alternativeLayout}) => {
             }
             <TableCell align="right">
                 {!alternativeLayout &&
-                    <Button onClick={handleOpenBuyDialog}>
-                    Buy
+                    <Button onClick={handleOpenSellDialog}>
+                        Sell
                     </Button>
                 }
-                <Button onClick={handleOpenSellDialog}>
-                    Sell
+                <Button onClick={() => showModal(BuyDialog, { stock: row })}>
+                Buy
                 </Button>
             </TableCell>
         </TableRow>
