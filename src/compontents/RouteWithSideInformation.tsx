@@ -1,14 +1,10 @@
-import React, { useContext, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, Grid, Card, Paper } from '@mui/material';
+import React, { useContext } from 'react';
+import { Grid, Paper } from '@mui/material';
 import Login from './Login';
-import Chart from './Chart';
-import apiRequest from '../utils/apiRequest';
-import { IStock } from '../utils/types';
-import StockTable from './StockTable';
 import EarningsCalendar from './Calendar';
 import { ProfileContext } from '../contexts/profile';
 import Profile from "./Profile";
-import { Route, RouteProps, Router } from 'react-router';
+import { Route, RouteProps } from 'react-router';
 
 const RouteWithSideInformation: React.FC<RouteProps> = (props: RouteProps) => {
     const {

@@ -1,14 +1,10 @@
 import React, { useContext, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, Grid, Card, Paper } from '@mui/material';
-import Login from '../compontents/Login';
 import Chart from '../compontents/Chart';
 import apiRequest from '../utils/apiRequest';
 import { IStock } from '../utils/types';
 import StockTable from '../compontents/StockTable';
-import EarningsCalendar from '../compontents/Calendar';
 import { ProfileContext } from '../contexts/profile';
-import Profile from "../compontents/Profile";
-
 const Home: React.FC = () => {
     const {
         isLoggedIn,
@@ -27,12 +23,6 @@ const Home: React.FC = () => {
             }
         })();
     }, []);
-
-    React.useEffect(() => {
-        console.log(isLoggedIn)
-    }, [isLoggedIn]);
-
-
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>

@@ -6,7 +6,6 @@ import App from './App';
 import ProfileProvider from "./contexts/profile";
 import ModalProvider from 'mui-modal-provider';
 import { SnackbarProvider } from 'notistack';
-
 ReactDOM.render(
     <BrowserRouter>
         <ProfileProvider>

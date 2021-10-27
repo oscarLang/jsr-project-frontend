@@ -2,12 +2,25 @@ import React, { useContext, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, Grid, Card, Paper, TextField, ButtonGroup, InputAdornment } from '@mui/material';
 import apiRequest from '../utils/apiRequest';
 import { useHistory } from 'react-router';
+import { useSnackbar } from 'notistack';
+import { ProfileContext } from '../contexts/profile';
 
 const DepositView: React.FC = () => {
+    const {
+        getFunds
+        } = useContext(ProfileContext);
+    const { enqueueSnackbar } = useSnackbar();
     const history = useHistory();
     const [amount, changeAmount] = React.useState(0);
     const submit = async () => {
-        const res = apiRequest("/user/deposit/", "POST", {amount: amount})
+        try {
+            const res = await apiRequest("/user/deposit/", "POST", {amount: amount})
+            enqueueSnackbar("Funds deposited",{variant: 'success'});
+            await getFunds();
+            history.push("/");
+        } catch (error) {
+            enqueueSnackbar("Errow while trying to deposit funds",{variant: 'error'});
+        }
     };
 
 

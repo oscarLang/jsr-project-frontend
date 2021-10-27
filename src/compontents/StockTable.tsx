@@ -26,12 +26,12 @@ const StockTable: React.FC<IProps> = ({objects}) => {
             <TableHead>
               <TableRow>
                 <TableCell>Stock</TableCell>
-                <TableCell align="right">Name</TableCell>
+                <TableCell >Name</TableCell>
                 <TableCell align="right">Current price($)</TableCell>
                 {alternativeLayout &&
                     <TableCell align="right">Change</TableCell>
                 }
-                <TableCell align="right">Action</TableCell>
+                <TableCell align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

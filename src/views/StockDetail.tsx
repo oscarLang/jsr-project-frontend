@@ -7,6 +7,7 @@ import { IStock } from '../utils/types';
 import { ProfileContext } from '../contexts/profile';
 import Profile from "../compontents/Profile";
 import { useParams } from 'react-router';
+import { socket } from '../App';
 
 const StockDetail: React.FC = () => {
     const {
@@ -15,13 +16,20 @@ const StockDetail: React.FC = () => {
         funds
         } = useContext(ProfileContext);
     const [stockItem, setStockItem] = React.useState<IStock>();
-    let { stock } = useParams<{stock: string}>();
+    let { ticker } = useParams<{ticker: string}>();
 
     React.useEffect(() => {
         (async function() {
-            const res = await apiRequest(`/market/${stock}/`, "GET");
+            const res = await apiRequest(`/market/${ticker}/`, "GET");
             setStockItem(res.data);
         })();
+        socket.on("minutly", items => {
+            const thisStock = items.find((item: IStock) => item.ticker === ticker);
+            if (thisStock) {
+                console.log(thisStock);
+                setStockItem(thisStock);
+            }
+        });
     }, []);
 
     return (

@@ -15,6 +15,7 @@
     "@types/react": "^17.0.27",
     "@types/react-dom": "^17.0.9",
     "axios": "^0.22.0",
+    "date-fns": "^2.25.0",
     "mui-modal-provider": "^1.5.1",
     "notistack": "^2.0.2",
     "react": "^17.0.2",
@@ -22,6 +23,8 @@
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "recharts": "^2.1.4",
+    "socket.io": "^4.3.1",
+    "socket.io-client": "^4.3.2",
     "typescript": "^4.4.3",
     "web-vitals": "^1.1.2"
   },

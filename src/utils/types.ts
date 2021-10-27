@@ -1,15 +1,21 @@
 export interface IStockHistory {
-    price: number;
+    price: string;
+    date: Date;
+    formatedDate: string;
 }
 
 export interface IStock {
+    ticker: string;
     name: string;
+    ceo: string;
+    catchPhrase: string;
     price: string;
     quantity: number;
-    rate: number;
-    stock: string;
-    varience: number;
+    volatility: number;
     amount: number;
-    history: IStockHistory[];
+    buyPrice: number;
+    minutly: IStockHistory[];
+    hourly: IStockHistory[];
+    daily: IStockHistory[];
 }
   

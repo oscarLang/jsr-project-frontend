@@ -18,7 +18,7 @@ const BuyDialog: React.FC<IProps> = ({stock, ...props}) => {
     const [existingAmount, setExistingAmount] = React.useState(0);
     React.useEffect(() => {
         if (profile && profile.stocks?.length) {
-            const hasTheStock = profile.stocks.find((s) => s.name === stock.stock);
+            const hasTheStock = profile.stocks.find((s) => s.name === stock.name);
             if (hasTheStock) {
                 setExistingAmount(hasTheStock.amount);
             }
@@ -32,7 +32,7 @@ const BuyDialog: React.FC<IProps> = ({stock, ...props}) => {
         }
 
         const buyStock = await apiRequest("/market/buy/", "POST",{
-            stock: stock.stock,
+            stock: stock.ticker,
             amount: amountTextField
         });
 

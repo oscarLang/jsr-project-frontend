@@ -1,51 +1,118 @@
 import React from "react";
-import { CircularProgress, Typography } from "@mui/material"
-import { CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Button, ButtonGroup, CircularProgress, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material"
+import { Area, AreaChart, CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { IStock, IStockHistory } from "../utils/types";
+import { format } from 'date-fns'
 
 interface IProps {
   object: IStock;
 }
 
+type FilterPeriod = "HOUR" | "DAY" | "MONTH";
+
 const Chart: React.FC<IProps> = ({object}) => {
-    if (!object || !Object.keys(object).length) {
+    const [filter, setFilter] = React.useState<IStockHistory[]>([]);
+    const [period, setFilterPeriod] = React.useState<FilterPeriod>("HOUR");
+    const [timeForamt, setTimeFormat] = React.useState<string>("HH:mm");
+    React.useEffect(() => {
+        if (object && Object.keys(object).length) {
+            if (object.minutly.length) {
+                console.log("true");
+                setFilter(object.minutly);
+            }
+        }
+    }, [object]);
+
+    if (!object || !Object.keys(object).length || !filter.length) {
       return <CircularProgress />
     }
 
-    let min = object.history.reduce((prev: IStockHistory, curr: IStockHistory) => prev.price < curr.price ? prev : curr);
-    let max = object.history.reduce((prev: IStockHistory, curr: IStockHistory) => prev.price > curr.price ? prev : curr);
-    let minDomain = Number(min.price - 20) >= 0 ? Number(min.price - 20) : 0;
+    const onChangeTimeRange = (range: FilterPeriod): void => {
+        switch (range) {
+            case "HOUR":
+                setFilter(object.minutly);
+                setFilterPeriod("HOUR");
+                setTimeFormat("HH:mm");
+                break;
+            case "DAY":
+                setFilter(object.hourly);
+                setTimeFormat("HH:mm");
+                setFilterPeriod("DAY");
+                break;
+            case "MONTH":
+                setFilter(object.daily);
+                setTimeFormat("MM/dd");
+                setFilterPeriod("MONTH");
+                break;
+            default:
+                break;
+        }
+    };
+
+    const formatTick = (tick: string): string => {
+        return format(Date.parse(tick), timeForamt);
+    };
+
+    let min = filter.reduce((prev: IStockHistory, curr: IStockHistory): IStockHistory => {
+       return parseFloat(prev.price) < parseFloat(curr.price) ? prev : curr; 
+    });
+    
+    let max = filter.reduce((prev: IStockHistory, curr: IStockHistory): IStockHistory => {
+        return parseFloat(prev.price) > parseFloat(curr.price) ? prev : curr; 
+    });
+    let minDomain = Number(min.price) - 20 >= 0 ? Number(min.price) - 20 : 0;
     let maxDomain = Number(max.price) + 20;
+    console.log("dwadawd", max, min);
+    filter.forEach((f) => {
+        console.log(f.price);
+    })
     return (
         <>
             <Typography variant="h4">{object.name}</Typography>
-            <ResponsiveContainer  width="99%" aspect={3}>
-                <LineChart
-                    data={object.history}
+            <ResponsiveContainer width="99%" aspect={3}>
+                <AreaChart
+                    data={[...filter].reverse()}
                     margin={{
-                        top: 16,
-                        right: 16,
+                        top: 24,
+                        right: 24,
                         bottom: 0,
                         left: 24,
                     }}
                 >
-                <YAxis domain={[Math.round(minDomain), Math.round(maxDomain)]}>
-                    <Label
-                        angle={270}
-                        position="left"
-                        >
-                        Price
-                    </Label>
-                </YAxis>
-                <XAxis />
-                <Line
-                    isAnimationActive={false}
-                    dataKey="price"
-                    stroke="#8884d8"
-                    dot={false}
-                />
-                </LineChart>
+                    <YAxis domain={[Math.round(minDomain), Math.round(maxDomain)]}>
+                        <Label  
+                            angle={270}
+                            position="left"
+                            >
+                            Price
+                        </Label>
+                    </YAxis>
+                    <XAxis dataKey="date" tickFormatter={formatTick}/>
+                    <Area
+                        dataKey="price"
+                        stroke="purple"
+                        fill="lightblue"
+                        type="monotone"
+                        dot={false}
+                    />
+                    <Tooltip 
+                        formatter={(value: string, name: any, props:any) => [`$${Number(value).toFixed(0)}`, "Price"]}
+                        labelFormatter={(value: string) => format(Date.parse(value),"yyyy/MM/dd-HH:mm")}
+                    />
+                </AreaChart>
             </ResponsiveContainer>
+            <ToggleButtonGroup
+                color="primary"
+                value={period}
+                exclusive
+                onChange={(event, value: FilterPeriod) => onChangeTimeRange(value)}
+                fullWidth
+                size="small"
+                >
+                <ToggleButton value="HOUR">Latest hour</ToggleButton>
+                <ToggleButton value="DAY">Last 24 hours</ToggleButton>
+                <ToggleButton value="MONTH">Last month</ToggleButton>
+            </ToggleButtonGroup>
         </>
     );
 }
