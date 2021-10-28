@@ -16,24 +16,24 @@ const Home: React.FC = () => {
         (async function() {
             try {
                 const market = await apiRequest("/market/all/", "GET");
-                console.log(market);
                 setStocks(market.data.res);
             } catch (e) {
                 console.error(e);
             }
         })();
     }, []);
+    const random = Math.floor((Math.random() * stocks.length) + 0);
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Paper sx={{padding: "1em"}}>
-                    <Chart object={stocks ? stocks[0] : {} as IStock}/>
+                    <Chart object={stocks ? stocks[random] : {} as IStock}/>
                 </Paper>
             </Grid>
             <Grid item xs={12}>
                 <Paper sx={{padding: "1em"}}>
                     <Typography variant="h6">Popular stocks</Typography>
-                    <StockTable objects={stocks}/>
+                    <StockTable objects={stocks} alternativeLayout={false}/>
                 </Paper>
             </Grid>
         </Grid>

@@ -9,8 +9,8 @@ interface IProps extends DialogProps {
     stock: IStock;
 }
 
-const BuyDialog: React.FC<IProps> = ({stock, ...props}) => {
-    const { profile, getProfile, funds } = useContext(ProfileContext);
+const SellDialog: React.FC<IProps> = ({stock, ...props}) => {
+    const { profile, getProfile } = useContext(ProfileContext);
     const { enqueueSnackbar } = useSnackbar();
     const [helperText, setHelperText] = React.useState("");
     const [error, setError] = React.useState(false);
@@ -18,42 +18,42 @@ const BuyDialog: React.FC<IProps> = ({stock, ...props}) => {
     const [existingAmount, setExistingAmount] = React.useState(0);
     React.useEffect(() => {
         if (profile && profile.stocks?.length) {
-            const hasTheStock = profile.stocks.find((s) => s.name === stock.name);
+            const hasTheStock = profile.stocks.find((s) => s.name === stock.ticker);
             if (hasTheStock) {
                 setExistingAmount(hasTheStock.amount);
             }
         }
     }, [profile]);
 
-    const handleBuy = async (): Promise<void> => {
+    const handleSell = async (): Promise<void> => {
         if (error) {
             setHelperText("Fix errors before buying stock: " + helperText);
             return;
         }
 
-        const buyStock = await apiRequest("/market/buy/", "POST",{
+        const sellStock = await apiRequest("/market/sell/", "POST",{
             stock: stock.ticker,
             amount: amountTextField
         });
 
-        if (buyStock) {
-            enqueueSnackbar(amountTextField + " stocks of " + stock.name + " bought");
+        if (sellStock) {
+            enqueueSnackbar(amountTextField + " stocks of " + stock.name + " sold");
             setError(false);
             await getProfile();
 
         } else {
             setError(true);
-            setHelperText("Failed to purchase stocks");
+            setHelperText("Failed to sell stocks");
         }
     };
     const  validate = (event: any): void => {
         var amount = event.target.value;
-        if (amount * parseFloat(stock.price) > funds) {
-            setError(true);
-            setHelperText("Not enough funds available!");
-        } else if (amount < 0) {
+        if (amount < 0) {
             setError(true);
             setHelperText("Amount can not be negative");
+        } else if (amount > existingAmount) {
+            setError(true);
+            setHelperText("You only have " + existingAmount + " of this stock");
         } else {
             setError(false);
             setHelperText("");
@@ -64,43 +64,34 @@ const BuyDialog: React.FC<IProps> = ({stock, ...props}) => {
 
     return (
         <Dialog {...props}>
-            <DialogTitle id="form-dialog-title">Buy stocks</DialogTitle>
+            <DialogTitle id="form-dialog-title">Sell stocks</DialogTitle>
             <DialogContent>
             <DialogContentText>
-                Buy stocks of {stock.name} for current price of ${stock.price}
+                Sell stocks of {stock.name} for current price of ${stock.price}
             </DialogContentText>
-            {existingAmount > 0 &&
-                <DialogContentText>
+            <DialogContentText>
                 You currently have {existingAmount} stocks of this type.
-                </DialogContentText>
-            }
-            <Grid container justifyContent="center" alignItems="center">
-                <Grid item>
-                    <TextField
-                        autoFocus
-                        id="amount"
-                        label="Amount"
-                        type="number"
-                        error={error}
-                        onChange={validate}
-                        value={amountTextField}
-                        helperText={helperText}
-                    />
-                </Grid>
-                <Grid item>
-                    <Typography variant="subtitle1">
-                    for ${(amountTextField * Number(stock.price)).toFixed(2)}
-                    </Typography>
-                </Grid>
-            </Grid>
+            </DialogContentText>
+            <TextField
+                autoFocus
+                margin="dense"
+                id="amount"
+                label="Amount"
+                type="number"
+                fullWidth
+                error={error}
+                onChange={validate}
+                value={amountTextField}
+                helperText={helperText}
+            />
             </DialogContent>
             <DialogActions>
-            <Button color="primary" onClick={handleBuy} disabled={error}>
-                Buy
+            <Button color="primary" onClick={handleSell} disabled={error}>
+                Sell
             </Button>
             </DialogActions>
         </Dialog>
     );
 }
 
-export default BuyDialog;
+export default SellDialog;

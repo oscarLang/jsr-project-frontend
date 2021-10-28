@@ -16,16 +16,9 @@ const Chart: React.FC<IProps> = ({object}) => {
     const [timeForamt, setTimeFormat] = React.useState<string>("HH:mm");
     React.useEffect(() => {
         if (object && Object.keys(object).length) {
-            if (object.minutly.length) {
-                console.log("true");
-                setFilter(object.minutly);
-            }
+            onChangeTimeRange(period);
         }
     }, [object]);
-
-    if (!object || !Object.keys(object).length || !filter.length) {
-      return <CircularProgress />
-    }
 
     const onChangeTimeRange = (range: FilterPeriod): void => {
         switch (range) {
@@ -53,6 +46,10 @@ const Chart: React.FC<IProps> = ({object}) => {
         return format(Date.parse(tick), timeForamt);
     };
 
+    if (!object || !Object.keys(object).length || !filter.length) {
+        return <CircularProgress />
+    }
+
     let min = filter.reduce((prev: IStockHistory, curr: IStockHistory): IStockHistory => {
        return parseFloat(prev.price) < parseFloat(curr.price) ? prev : curr; 
     });
@@ -62,13 +59,9 @@ const Chart: React.FC<IProps> = ({object}) => {
     });
     let minDomain = Number(min.price) - 20 >= 0 ? Number(min.price) - 20 : 0;
     let maxDomain = Number(max.price) + 20;
-    console.log("dwadawd", max, min);
-    filter.forEach((f) => {
-        console.log(f.price);
-    })
     return (
         <>
-            <Typography variant="h4">{object.name}</Typography>
+            <Typography variant="h6">{object.name}</Typography>
             <ResponsiveContainer width="99%" aspect={3}>
                 <AreaChart
                     data={[...filter].reverse()}
@@ -96,7 +89,7 @@ const Chart: React.FC<IProps> = ({object}) => {
                         dot={false}
                     />
                     <Tooltip 
-                        formatter={(value: string, name: any, props:any) => [`$${Number(value).toFixed(0)}`, "Price"]}
+                        formatter={(value: string) => [`$${Number(value).toFixed(2)}`, "Price"]}
                         labelFormatter={(value: string) => format(Date.parse(value),"yyyy/MM/dd-HH:mm")}
                     />
                 </AreaChart>

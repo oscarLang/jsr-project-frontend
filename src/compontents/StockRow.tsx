@@ -5,6 +5,9 @@ import { useHistory } from "react-router-dom";
 import { useModal } from "mui-modal-provider";
 import BuyDialog from "./BuyDialog";
 import { socket } from "../App";
+import SellDialog from "./SellDialog";
+import { getChangeOfStock } from "../utils/helpers";
+import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 interface IProps {
   row: IStock;
   alternativeLayout: boolean;
@@ -23,35 +26,54 @@ const StockRow: React.FC<IProps> = ({row, alternativeLayout}) => {
                setColor("black"); 
             }, 5000);
         });
+        return () => {
+            socket.removeAllListeners(`marketChange${row.ticker}`);
+        }
     }, []);
+    let changeOfStock = 0;
+    if (!alternativeLayout) {
+        changeOfStock = Number(getChangeOfStock(row).toFixed(0));
+    } else {
+        changeOfStock = ((Number(row.price) - Number(row.buyPrice)) / Number(row.buyPrice)) * 100;
+    }
 
-    const handleOpenSellDialog = () => {
-        console.log("sell");
+    const push = (): void => {
+        history.push(`/stocks/${stock.ticker}`);
     };
-
-    const getChangeOfStock = (): number => {
-        const newPrice = Number(stock.price);
-        const old = Number(stock.daily.slice(-1)[0].price);
-        return ((newPrice - old) / old) * 100;
-    };
-
-    const changeOfStock = Number(getChangeOfStock().toFixed(0));
 
     return (
         <TableRow>
-            <TableCell component="th" scope="row" onClick={() => history.push(`/stocks/${stock.ticker}`)}>
-            {stock.ticker}
+            <TableCell component="th" scope="row" onClick={() => push()}>
+                <OpenInFullIcon color="primary"/>
             </TableCell>
-            <TableCell>{stock.name}</TableCell>
+            <TableCell component="th" scope="row" onClick={() => push()}>
+                {stock.ticker}
+            </TableCell>
+            {alternativeLayout ? (
+                <TableCell component="th" scope="row" onClick={() => push()}>
+                    ${parseFloat(stock.buyPrice).toFixed(2)}
+                </TableCell>
+            ) : (
+                <TableCell component="th" scope="row" onClick={() => push()}>
+                    {stock.name}
+                </TableCell>
+            )}
             <TableCell style={{ color: color }} align="right">
                 ${parseFloat(stock.price).toFixed(2)}
             </TableCell>
-            <TableCell align="right" style={{ color: `${(changeOfStock < 0) ? "red" : "green"}` }}>{changeOfStock}%</TableCell>
+            {!alternativeLayout ? (
+                <TableCell align="right" style={{ color: `${(changeOfStock < 0) ? "red" : "green"}` }}>{changeOfStock}%</TableCell>
+                ) : (
+                    <>
+                    <TableCell align="right" style={{ color: `${(changeOfStock < 0) ? "red" : "green"}` }}>{changeOfStock.toFixed(0)}%</TableCell>
+                    <TableCell align="right" >{stock.amount}pcs</TableCell>
+                </>
+            )}
             <TableCell align="right">
-                <Button onClick={handleOpenSellDialog}>
+                <Button color="error" onClick={() => showModal(SellDialog, { stock: stock })}>
                     Sell
                 </Button>
-                <Button onClick={() => showModal(BuyDialog, { stock: stock })}>
+                <Button color="success" onClick={() => showModal(BuyDialog, { stock: stock })}>
                     Buy
                 </Button>
             </TableCell>

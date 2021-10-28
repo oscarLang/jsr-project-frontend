@@ -14,8 +14,17 @@ const Portfolio: React.FC = () => {
     React.useEffect(() => {
         (async function() {
             try {
-                const market = await apiRequest("/user/stocks/", "GET");
-                setStocks(market.data.stocks);
+                const userReq = await apiRequest("/user/stocks/", "GET");
+                const marketReq = await apiRequest("/market/all/", "GET");
+                const stocksInMarket = marketReq.data.res;
+                const combined = userReq.data.stocks.filter((s: IStock) => s.amount > 0).map((s: IStock) => {
+                    const stockOfUser = 
+                        stocksInMarket.find((sm: IStock) => (s.name === sm.ticker));
+                    return {...stockOfUser, ...s};
+                });
+                console.log(combined);
+                setStocks(combined);
+
             } catch (e) {
                 console.error(e);
             }
@@ -24,7 +33,7 @@ const Portfolio: React.FC = () => {
     return (
         <Paper sx={{padding: "1em"}}>
             <Typography variant="h6">Porfolio</Typography>
-            <StockTable objects={stocks}/>
+            <StockTable objects={stocks} alternativeLayout={true}/>
         </Paper>
     );  
 }

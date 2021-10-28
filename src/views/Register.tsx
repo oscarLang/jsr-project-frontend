@@ -1,14 +1,21 @@
 import {Typography, Button, Avatar, TextField, Paper} from '@mui/material';
-import React from 'react';
+import { Redirect, useHistory } from "react-router-dom";
+import { useSnackbar } from 'notistack';
+import React, { useContext } from 'react';
 import apiRequest from '../utils/apiRequest';
+import { ProfileContext } from '../contexts/profile';
 
 const Register = (): JSX.Element => {
+    const {
+        isLoggedIn,
+    } = useContext(ProfileContext);
+    const { enqueueSnackbar } = useSnackbar();
+    const history = useHistory();
     const [form, setForm] = React.useState({
         email: "",
         password: "",
         passwordAgain: "",
     });
-
     const onChange = (name: string, value: string): void => {
         setForm({...form, [name]: value})
     };
@@ -17,11 +24,17 @@ const Register = (): JSX.Element => {
         event.preventDefault();
         try {
             const result = await apiRequest("/user/register/", "POST", form);
-            console.log(result);
+            if (result.data.res) {
+                enqueueSnackbar("Succesfully registred user",{variant: 'success'});
+                history.push("/");
+            }
         } catch (error) {
-            console.log(error);
+            enqueueSnackbar("Succesfully registred user",{variant: 'error'});
         }
     };
+    if (isLoggedIn) {
+        return <Redirect to="/" />;
+    }
     return (
         <Paper sx={{maxWidth: 500, margin: "auto", padding: "1em"}}>
             <Avatar />

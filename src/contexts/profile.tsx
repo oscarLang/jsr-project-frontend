@@ -12,6 +12,7 @@ const initial: ProfileState = {
     loginUser: async (email: string, password: string) => false,
     getProfile: async () => false,
     getFunds: async () => 0,
+    logout: Function
 };
 export const ProfileContext = React.createContext(initial);
 
@@ -54,6 +55,11 @@ const ProfileProvider: FC = ({ children }) => {
             return 0;
         }
     };
+
+    const logout = (): void => {
+        document.cookie = "jwt=; Max-Age=-99999999;"; 
+        dispatch({ type: 'LOGOUT'});
+    };
     
     return (
         <ProfileContext.Provider value={{
@@ -61,6 +67,7 @@ const ProfileProvider: FC = ({ children }) => {
             getProfile,
             loginUser,
             getFunds,
+            logout
         }}>
             {children}
         </ProfileContext.Provider>

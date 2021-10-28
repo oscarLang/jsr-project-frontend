@@ -5,31 +5,28 @@ import StockRow from "./StockRow";
 
 interface IProps {
   objects: IStock[];
+  alternativeLayout: boolean;
 }
 
-const StockTable: React.FC<IProps> = ({objects}) => {
-    const [alternativeLayout, setLayout] = React.useState(true);
-    React.useEffect(() => {
-        if(objects.length) {
-            if ('buyPrice' in objects[0]) {
-                setLayout(true)
-            }
-        }
-    }, [objects]);
-    
-    if (!objects) {
-      return <CircularProgress />
-    }
+const StockTable: React.FC<IProps> = ({objects, alternativeLayout = false}) => {
     return (
         <TableContainer>
           <Table aria-label="collapsible table">
             <TableHead>
               <TableRow>
+                <TableCell></TableCell>
                 <TableCell>Stock</TableCell>
-                <TableCell >Name</TableCell>
+                <TableCell>{!alternativeLayout ? "Name": "Purchase price"}</TableCell>
                 <TableCell align="right">Current price($)</TableCell>
-                {alternativeLayout &&
-                    <TableCell align="right">Change</TableCell>
+                {!alternativeLayout ?
+                    (<TableCell align="right">Change(24h)</TableCell>)
+                    :
+                    (
+                    <>
+                        <TableCell align="right">Change</TableCell>
+                        <TableCell align="right">Amount</TableCell>
+                    </>
+                    )
                 }
                 <TableCell align="center">Actions</TableCell>
               </TableRow>

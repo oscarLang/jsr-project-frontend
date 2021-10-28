@@ -13,7 +13,7 @@ export interface IStock {
     quantity: number;
     volatility: number;
     amount: number;
-    buyPrice: number;
+    buyPrice: string;
     minutly: IStockHistory[];
     hourly: IStockHistory[];
     daily: IStockHistory[];

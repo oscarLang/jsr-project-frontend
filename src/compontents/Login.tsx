@@ -1,15 +1,10 @@
 
-import { AppBar, Toolbar, Typography, Button, IconButton, Grid, Avatar, TextField, } from '@mui/material';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import { Link, Route, Switch } from "react-router-dom";
-
-import { AccountCircle } from '@mui/icons-material';
-import React, { useContext, useReducer } from 'react';
-import apiRequest from '../utils/apiRequest';
-import profileReducer from '../reducers/profile';
+import { Typography, Button, Grid, Avatar, TextField, } from '@mui/material';
+import { Link, Redirect } from "react-router-dom";
+import React, { useContext } from 'react';
 import { ProfileContext } from '../contexts/profile';
 
-const Login = (): JSX.Element => {
+const Login: React.FC = () => {
     const {
         isLoggingIn,
         isLoggedIn,
@@ -35,7 +30,7 @@ const Login = (): JSX.Element => {
     };
 
     if (isLoggedIn) {
-        return <div>Logged in</div>;
+        return <Redirect to="/" />;
     }
 
     return (
@@ -82,8 +77,7 @@ const Login = (): JSX.Element => {
                 </Grid>
                 </Grid>
             </form>
-            </div>
-
+        </div>
     );
 }
 
