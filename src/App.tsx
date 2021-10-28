@@ -21,8 +21,10 @@ import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LogoutView from './views/Logout';
 
+var socketUrl = process.env.REACT_APP_SOCKET_URL || "https://market-socket.oscarlang.tech";
 
-export const socket = io('http://localhost:8300', { reconnectionDelayMax: 10000 });
+
+export const socket = io(socketUrl, { reconnectionDelayMax: 10000 });
 const App = (): JSX.Element => {
     const {
         isLoggedIn,

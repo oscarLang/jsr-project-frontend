@@ -1,6 +1,6 @@
 import axios, { Axios, Method } from "axios";
 
-const BASE_URL = "http://localhost:1337";
+const BASE_URL = process.env.REACT_APP_API_URL || "https://market.oscarlang.tech";
 
 const apiRequest = async (url: string, method: Method, data?: any): Promise<any> => {
     return await axios({
